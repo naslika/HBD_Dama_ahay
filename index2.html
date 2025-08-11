@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hai Kamu!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Mencegah scroll */
+        }
+        .container-bg {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+        .content-card {
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: all 0.5s ease-in-out;
+        }
+        .hidden-screen {
+            transform: scale(0.9);
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+        }
+        .visible-screen {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: all;
+            position: relative;
+        }
+        .runaway-btn {
+            position: absolute;
+            transition: top 0.3s ease, left 0.3s ease;
+        }
+        /* Animasi balon */
+        .balloon {
+            position: absolute;
+            bottom: -200px;
+            width: 70px;
+            height: 90px;
+            background-color: #ff69b4;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: float 15s infinite ease-in-out;
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1px;
+            height: 20px;
+            background: rgba(0,0,0,0.2);
+        }
+        .balloon:nth-child(2) {
+            left: 20%;
+            width: 80px;
+            height: 100px;
+            background-color: #6495ed;
+            animation-duration: 20s;
+            animation-delay: 2s;
+        }
+        .balloon:nth-child(3) {
+            left: 70%;
+            width: 60px;
+            height: 80px;
+            background-color: #ffd700;
+            animation-duration: 18s;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0% { bottom: -200px; transform: translateX(0); }
+            50% { transform: translateX(100px) rotateZ(15deg); }
+            100% { bottom: 110vh; transform: translateX(-50px) rotateZ(-15deg); }
+        }
+        
+        /* Animasi confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f43f5e;
+            animation: confetti-fall 3s linear infinite;
+        }
+        
+        .confetti-piece:nth-child(odd) {
+            background: #3b82f6;
+            animation-delay: 0.5s;
+        }
+        
+        .confetti-piece:nth-child(3n) {
+            background: #eab308;
+            animation-delay: 1s;
+        }
+        
+        .confetti-piece:nth-child(4n) {
+            background: #10b981;
+            animation-delay: 1.5s;
+        }
+        
+        .confetti-piece:nth-child(5n) {
+            background: #f59e0b;
+            animation-delay: 2s;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotateZ(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotateZ(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="container-bg flex items-center justify-center min-h-screen p-4">
+
+    <!-- Kontainer Utama -->
+    <div class="w-full max-w-md relative">
+
+        <!-- Layar 1: Pertanyaan Pembuka -->
+        <div id="screen1" class="content-card rounded-2xl p-8 text-center shadow-lg visible-screen">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">Punya waktu sebentar?</h1>
+            <div class="flex justify-center space-x-4">
+                <button onclick="showScreen('screen2')" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition-transform transform hover:scale-105">Boleh</button>
+            </div>
+        </div>
+
+        <!-- Layar 2: Pertanyaan Maaf -->
+        <div id="screen2" class="content-card rounded-2xl p-8 text-center shadow-lg hidden-screen">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">BTW, maafin aku ya kalo aku ga tau hari ini kamu ultah🙏😘</h1>
+            <div class="relative h-24 flex items-center justify-center">
+                <button onclick="showScreen('screen3')" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-8 rounded-full transition-transform transform hover:scale-105">Dimaafin</button>
+                <button id="runaway" onmouseover="runawayButton(this)" class="runaway-btn bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-8 rounded-full">Ga dimaafin</button>
+            </div>
+        </div>
+
+        <!-- Layar 3: Pertanyaan Serius -->
+        <div id="screen3" class="content-card rounded-2xl p-8 text-center shadow-lg hidden-screen">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Hehhehe, jangan lupa besarin volume ya🎶...</h1>
+            <p class="text-gray-600 mb-6">Btw, kamu tau nggak hari ini hari apa?</p>
+            <div class="flex justify-center space-x-4">
+                <button onclick="showScreen('finalScreen')" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition-transform transform hover:scale-105">Hari spesial aku!</button>
+            </div>
+        </div>
+
+        <!-- Layar Final: Ucapan Selamat -->
+        <div id="finalScreen" class="content-card rounded-2xl p-8 text-center shadow-lg hidden-screen">
+            <!-- Ganti [NAMA TEMAN] dengan nama temanmu -->
+            <h1 class="text-3xl font-bold text-pink-600 mb-4 animate-pulse">SELAMAT ULANG TAHUN, DAMAYANTI!</h1>
+            <img src="/HBD_Dama_ahay/damahbd.jpg" alt="Selamat Ulang Tahun" class="mx-auto rounded-lg my-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/fad0c4/333333?text=HBD!';" />
+            <p class="text-gray-700 text-lg">Semoga panjang umur, sehat selalu, dan semua keinginanmu tercapai. Cie seng maringene duwe KTP rek. Ya semoga yg kau semogakan akan kusemogakan selalu. Pokoknya semoga di tahun ini kamu makin makin tersemakinkan ya, lop you😉😘🎉🎊</p>
+            <div class="balloons-container">
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+                <div class="balloon"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <!-- Ganti URL audio di bawah jika diinginkan. Pastikan link bisa diakses langsung. -->
+    <audio id="hbd-song" src="/HBD_Dama_ahay/laguhbd.mp3" loop></audio>
+
+    <script>
+        let currentScreen = 'screen1';
+        const song = document.getElementById('hbd-song');
+        let userHasInteracted = false; // Penanda interaksi pengguna
+
+        function showScreen(screenId) {
+            // --- PERUBAHAN UTAMA ADA DI SINI ---
+            // Saat pengguna mengklik tombol pertama kali, kita 'membangunkan' elemen audio.
+            // Ini memberi tahu browser bahwa pengguna siap untuk berinteraksi dengan suara.
+            if (!userHasInteracted) {
+                song.load(); // Mempersiapkan audio
+                userHasInteracted = true;
+            }
+            // --- AKHIR DARI PERUBAHAN ---
+
+            const oldScreen = document.getElementById(currentScreen);
+            const newScreen = document.getElementById(screenId);
+
+            if (oldScreen) {
+                oldScreen.classList.remove('visible-screen');
+                oldScreen.classList.add('hidden-screen');
+            }
+
+            if (newScreen) {
+                newScreen.classList.remove('hidden-screen');
+                newScreen.classList.add('visible-screen');
+            }
+            
+            currentScreen = screenId;
+
+            // Jika ini layar final, putar musik dan confetti
+            if (screenId === 'finalScreen') {
+                // Dengan trik di atas, perintah play() ini punya kemungkinan sukses lebih besar
+                song.play().catch(error => {
+                    // Jika tetap gagal, tampilkan tombol putar manual sebagai cadangan
+                    console.log("Autoplay dicegah oleh browser:", error);
+                    const playButton = document.createElement('button');
+                    playButton.innerText = "Putar Musik 🎵";
+                    playButton.className = "mt-4 bg-green-500 text-white font-bold py-2 px-4 rounded-full";
+                    playButton.onclick = () => {
+                        song.play();
+                        playButton.style.display = 'none';
+                    };
+                    newScreen.appendChild(playButton);
+                });
+                
+                // Mulai confetti
+                startConfetti();
+            }
+        }
+
+        function runawayButton(button) {
+            const container = button.parentElement;
+            const containerRect = container.getBoundingClientRect();
+            const buttonRect = button.getBoundingClientRect();
+
+            let newTop = Math.random() * (containerRect.height - buttonRect.height);
+            let newLeft = Math.random() * (containerRect.width - buttonRect.width);
+
+            button.style.top = `${newTop}px`;
+            button.style.left = `${newLeft}px`;
+        }
+
+        // Fungsi confetti
+        function createConfettiPiece() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-piece';
+            confetti.style.left = Math.random() * 100 + '%';
+            confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+            confetti.style.animationDelay = Math.random() * 2 + 's';
+            return confetti;
+        }
+
+        function startConfetti() {
+            const container = document.getElementById('confetti-container');
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confettiPiece = createConfettiPiece();
+                container.appendChild(confettiPiece);
+                
+                // Hapus confetti setelah animasi selesai
+                setTimeout(() => {
+                    if (confettiPiece.parentNode) {
+                        confettiPiece.parentNode.removeChild(confettiPiece);
+                    }
+                }, 6000);
+            }
+            
+            // Terus buat confetti baru setiap 500ms selama 10 detik
+            let confettiInterval = setInterval(() => {
+                for (let i = 0; i < 5; i++) {
+                    const confettiPiece = createConfettiPiece();
+                    container.appendChild(confettiPiece);
+                    
+                    setTimeout(() => {
+                        if (confettiPiece.parentNode) {
+                            confettiPiece.parentNode.removeChild(confettiPiece);
+                        }
+                    }, 6000);
+                }
+            }, 500);
+            
+            // Stop confetti setelah 10 detik
+            setTimeout(() => {
+                clearInterval(confettiInterval);
+            }, 10000);
+        }
+
+        // Inisialisasi posisi tombol kabur
+        window.onload = () => {
+            const runaway = document.getElementById('runaway');
+            runaway.style.top = '50%';
+            runaway.style.left = '60%';
+            runaway.style.transform = 'translateY(-50%)';
+        };
+    </script>
+</body>
+</html>
